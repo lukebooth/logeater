@@ -13,6 +13,7 @@ module Logeater
       @parser = Logeater::Parser.new
       @show_progress = options.fetch :progress, false
       @batch_size = options.fetch :batch_size, 500
+      @verbose = options.fetch :verbose, false
       @requests = {}
       @completed_requests = []
     end
@@ -37,6 +38,11 @@ module Logeater
       @show_progress
     end
     
+    def verbose?
+      @verbose
+    end
+    
+    
     
   private
     attr_reader :parser, :requests, :completed_requests
@@ -44,12 +50,12 @@ module Logeater
     def process_line!(line)
       attributes = parser.parse!(line)
       
-      return if attributes[:type] == :generic
+      return if [:generic, :request_line].member? attributes[:type]
       
       if attributes[:type] == :request_started
         requests[attributes[:uuid]] = attributes
           .slice(:uuid, :subdomain, :http_method, :path, :remote_ip)
-          .merge(started_at: attributes[:timestamp])
+          .merge(started_at: attributes[:timestamp], logfile: filename, app: app)
         return
       end
       
@@ -77,6 +83,8 @@ module Logeater
         save! if completed_requests.length >= batch_size
       end
       
+    rescue Logeater::Parser::UnmatchedLine
+      $stderr.puts "\e[90m#{$!.message}\e[0m" if verbose?
     rescue Logeater::Parser::Error
       log $!.message
     end
@@ -102,7 +110,7 @@ module Logeater
     
     
     def log(statement)
-      puts "\e[33m#{statement}\e[0m"
+      $stderr.puts "\e[33m#{statement}\e[0m"
     end
     
   end

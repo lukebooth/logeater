@@ -154,7 +154,7 @@ module Logeater
     
     
     def log(statement)
-      puts "\e[33m#{statement}\e[0m"
+      $stderr.puts "\e[33m#{statement}\e[0m"
     end
     
   end
