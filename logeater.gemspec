@@ -18,13 +18,18 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
+  spec.add_dependency "activerecord"
+  spec.add_dependency "activesupport"
+  spec.add_dependency "pg"
+  spec.add_dependency "standalone_migrations"
   spec.add_dependency "addressable"
 
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
-
   spec.add_development_dependency "rails", ">= 3.1.0", "< 5.0.0"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "shoulda-context"
   spec.add_development_dependency "turn"
+  spec.add_development_dependency "database_cleaner"
+
 end

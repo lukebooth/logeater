@@ -1,0 +1,9 @@
+I, [2015-01-10T15:18:12.064392 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496] Started GET "/people/1035826228?refresh_page=true" for 71.218.222.249 at 2015-01-10 15:18:12 +0000
+I, [2015-01-10T15:18:12.067034 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496] Processing by PeopleController#show as JS
+I, [2015-01-10T15:18:12.067134 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496]   Parameters: {"refresh_page"=>"true", "id"=>"1035826228"}
+I, [2015-01-10T15:18:12.156216 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496]   Rendered people/_name.html.erb (2.3ms)
+I, [2015-01-10T15:18:12.159557 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496]   Rendered people/_status.html.erb (3.1ms)
+I, [2015-01-10T15:18:12.177934 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496]   Rendered people/_household.html.erb (18.2ms)
+I, [2015-01-10T15:18:12.184299 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496]   Rendered person_tags/_tag.html.erb (1.1ms)
+I, [2015-01-10T15:18:12.262438 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496] [gzip] Compress reponse by 82.5 KB (87.6%)  (2.6ms)
+I, [2015-01-10T15:18:12.262903 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496] Completed 200 OK in 196ms (Views: 0.1ms | ActiveRecord: 50.0ms)
