@@ -134,7 +134,11 @@ module Logeater
       match = message.match(REQUEST_PARAMETERS_MATCHER)
       return unless match
       
-      { params: eval(match["params"]) } # <-- dangerous!
+      params = match["params"]
+      { params: eval(params) } # <-- dangerous!
+    rescue Exception
+      log "Unable to parse parameters: #{match["params"].inspect}"
+      { params: params }
     end
     
     def parse_request_completed_message(message)

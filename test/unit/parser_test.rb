@@ -125,6 +125,16 @@ class ParserTest < ActiveSupport::TestCase
     end
   end
   
+  context "when the \"Parameters\" line contains invalid syntax, it" do
+    setup do
+      @line = "I, [2015-01-10T15:18:12.067134 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496]   Parameters: {\"refresh_page\"=>}"
+    end
+    
+    should "return the params unparsed" do
+      assert_parses params: "{\"refresh_page\"=>}"
+    end
+  end
+  
   
   
   context "given the \"Completed\" line, it" do
