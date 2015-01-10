@@ -3,14 +3,16 @@ require "zlib"
 
 module Logeater
   class Reader
-    attr_reader :app, :path, :filename
+    attr_reader :app, :path, :filename, :batch_size
     
-    def initialize(app, path)
+    def initialize(app, path, options={})
       @app = app
       @path = path
       @filename = File.basename(path)
       @parser = Logeater::Parser.new
+      @batch_size = options.fetch :batch_size, 500
       @requests = {}
+      @completed_requests = []
     end
     
     
@@ -22,6 +24,7 @@ module Logeater
       
     def import
       each_line(&method(:process_line!))
+      save!
     end
     
     def remove_existing_entries!
@@ -62,7 +65,10 @@ module Logeater
           .slice(:http_status, :http_response, :duration)
           .merge(completed_at: attributes[:timestamp])
         
-        save! requests.delete(attributes[:uuid])
+        completed_requests.push Logeater::Request.new(request_attributes)
+        requests.delete attributes[:uuid]
+        
+        save! if completed_requests.length >= batch_size
       end
       
     rescue Logeater::Parser::Error
@@ -76,8 +82,10 @@ module Logeater
       file.close
     end
     
-    def save!(attributes)
-      Logeater::Request.create!(attributes.merge(app: app, logfile: filename))
+    def save!
+      return if completed_requests.empty?
+      Logeater::Request.import(completed_requests)
+      completed_requests.clear
     end
     
     
