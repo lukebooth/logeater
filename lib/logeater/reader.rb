@@ -1,5 +1,6 @@
 require "logeater/request"
 require "zlib"
+require "ruby-progressbar"
 
 module Logeater
   class Reader
@@ -10,6 +11,7 @@ module Logeater
       @path = path
       @filename = File.basename(path)
       @parser = Logeater::Parser.new
+      @show_progress = options.fetch :progress, false
       @batch_size = options.fetch :batch_size, 500
       @requests = {}
       @completed_requests = []
@@ -29,6 +31,10 @@ module Logeater
     
     def remove_existing_entries!
       Logeater::Request.where(app: app, logfile: filename).delete_all
+    end
+    
+    def show_progress?
+      @show_progress
     end
     
     
@@ -75,11 +81,16 @@ module Logeater
       log $!.message
     end
     
-    def each_line(&block)
-      file = File.extname(path) == ".gz" ? Zlib::GzipReader.open(path) : File.open(path)
-      file.each_line(&block)
-    ensure
-      file.close
+    def each_line
+      File.open(path) do |file|
+        io = File.extname(path) == ".gz" ? Zlib::GzipReader.new(file) : file
+        pbar = ProgressBar.create(title: filename, total: file.size, autofinish: false) if show_progress?
+        io.each_line do |line|
+          yield line
+          pbar.progress = file.pos if show_progress?
+        end
+        pbar.finish if show_progress?
+      end
     end
     
     def save!
