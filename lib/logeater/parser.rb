@@ -35,9 +35,9 @@ module Logeater
     
     REQUEST_CONTROLLER_MATCHER = /^
       Processing\sby\s
-      (?<controller>[A-Za-z0-9]+)\#
+      (?<controller>[A-Za-z0-9:]+)\#
       (?<action>[a-z_0-9]+)\sas\s
-      (?<format>.*)\b
+      (?<format>.*)
     /x.freeze
     
     REQUEST_PARAMETERS_MATCHER = /^

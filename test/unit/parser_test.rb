@@ -71,7 +71,7 @@ class ParserTest < ActiveSupport::TestCase
   
   context "given the \"Processing by\" line, it" do
     setup do
-      @line = "I, [2015-01-10T15:18:12.067034 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496] Processing by PeopleController#show as JS"
+      @line = "I, [2015-01-10T15:18:12.067034 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496] Processing by Api::V1::PeopleController#show as JS"
     end
     
     should "identify the line as :request_controller" do
@@ -79,7 +79,7 @@ class ParserTest < ActiveSupport::TestCase
     end
     
     should "identify the controller and action" do
-      assert_parses controller: "people_controller", action: "show"
+      assert_parses controller: "api/v1/people_controller", action: "show"
     end
     
     should "identify the format requested" do
