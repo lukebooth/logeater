@@ -41,6 +41,16 @@ class LogeaterTest < ActiveSupport::TestCase
       assert_equal 200, request.http_status
       assert_equal "OK", request.http_response
     end
+    
+    should "erase any entries that had already been imported with that app and filename" do
+      Logeater::Request.create!(app: app, logfile: "single_request.log", uuid: "1")
+      Logeater::Request.create!(app: app, logfile: "single_request.log", uuid: "2")
+      Logeater::Request.create!(app: app, logfile: "single_request.log", uuid: "3")
+      
+      assert_difference "Logeater::Request.count", -2 do
+        reader.import
+      end
+    end
   end
   
   
