@@ -137,7 +137,17 @@ class ParserTest < ActiveSupport::TestCase
     end
     
     should "identify the HTTP response" do
-      assert_parses http_status: 200, http_response: "OK"
+      assert_parses http_status: 401, http_response: "Unauthorized"
+    end
+    
+    should "identify the duration of the request" do
+      assert_parses duration: 2
+    end
+  end
+  
+  context "when the \"Completed\" line contains a breakdown of times, it" do
+    setup do
+      @line = "I, [2015-01-10T15:18:12.262903 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496] Completed 200 OK in 196ms (Views: 0.1ms | ActiveRecord: 50.0ms)"
     end
     
     should "identify the duration of the request" do

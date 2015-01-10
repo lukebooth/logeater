@@ -53,7 +53,7 @@ module Logeater
       Completed\s
       (?<http_status>\d\d\d)\s
       (?<http_response>.*)\sin\s
-      (?<duration>[\d\.]+)(?<units>ms)\s
+      (?<duration>[\d\.]+)(?<units>ms)\b
     /x.freeze # optional: (Views: 0.1ms | ActiveRecord: 50.0ms)
     
     def parse!(line)
