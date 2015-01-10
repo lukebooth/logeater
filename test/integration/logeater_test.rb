@@ -48,7 +48,7 @@ class LogeaterTest < ActiveSupport::TestCase
       Logeater::Request.create!(app: app, logfile: "single_request.log", uuid: "3")
       
       assert_difference "Logeater::Request.count", -2 do
-        reader.import
+        reader.reimport
       end
     end
   end

@@ -14,18 +14,23 @@ module Logeater
     end
     
     
-    def import
+    
+    def reimport
       remove_existing_entries!
+      import
+    end
+      
+    def import
       each_line(&method(:process_line!))
     end
-    
-    
-  private
-    attr_reader :parser, :requests
     
     def remove_existing_entries!
       Logeater::Request.where(app: app, logfile: filename).delete_all
     end
+    
+    
+  private
+    attr_reader :parser, :requests, :completed_requests
     
     def process_line!(line)
       attributes = parser.parse!(line)
