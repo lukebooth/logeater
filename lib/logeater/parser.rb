@@ -1,14 +1,10 @@
 require "addressable/uri"
 require "active_support/inflector"
+require "logeater/parser_errors"
 
 module Logeater
   class Parser
     
-    class Error < ::ArgumentError
-      def initialize(message, line)
-        super "ERROR: #{message}\nDETAIL: #{line.inspect}"
-      end
-    end
     
     LINE_MATCHER = /^
       [A-Z],\s
@@ -58,11 +54,11 @@ module Logeater
     
     def parse!(line)
       match = line.match(LINE_MATCHER)
-      raise Error.new("Unmatched line", line) unless match
+      raise UnmatchedLine.new(line) unless match
       
       timestamp = match["timestamp"]
       time = timestamp.match(TIMESTAMP_MATCHER)
-      raise Error.new("Malformated timestamp", timestamp) unless time
+      raise MalformedTimestamp.new(timestamp) unless time
       time = Time.new(*time.captures[0...-1], BigDecimal.new(time["seconds"]))
       
       message = match["message"]
