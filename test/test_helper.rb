@@ -1,0 +1,7 @@
+require "rubygems"
+require "rails"
+require "rails/test_help"
+require "pry"
+require "shoulda/context"
+require "turn"
+require "logeater"

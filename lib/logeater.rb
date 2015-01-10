@@ -1,3 +1,4 @@
+require "logeater/parser"
 require "logeater/version"
 
 module Logeater
