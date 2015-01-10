@@ -53,6 +53,18 @@ class ParserTest < ActiveSupport::TestCase
     should "identify the line as :request_started" do
       assert_parses type: :request_started
     end
+    
+    should "identify the HTTP method" do
+      assert_parses http_method: "GET"
+    end
+    
+    should "identify the path" do
+      assert_parses path: "/people/1035826228?refresh_page=true"
+    end
+    
+    should "identify the remote client's IP address" do
+      assert_parses remote_ip: "71.218.222.249"
+    end
   end
   
   
@@ -64,6 +76,14 @@ class ParserTest < ActiveSupport::TestCase
     
     should "identify the line as :request_controller" do
       assert_parses type: :request_controller
+    end
+    
+    should "identify the controller and action" do
+      assert_parses controller: "PeopleController", action: "show"
+    end
+    
+    should "identify the format requested" do
+      assert_parses format: "JS"
     end
   end
   
@@ -77,6 +97,10 @@ class ParserTest < ActiveSupport::TestCase
     should "identify the line as :request_params" do
       assert_parses type: :request_params
     end
+    
+    should "identify the params" do
+      assert_parses params: {"refresh_page" => "true", "id" => "1035826228"}
+    end
   end
   
   
@@ -88,6 +112,14 @@ class ParserTest < ActiveSupport::TestCase
     
     should "identify the line as :request_completed" do
       assert_parses type: :request_completed
+    end
+    
+    should "identify the HTTP response" do
+      assert_parses http_status: 200, http_response: "OK"
+    end
+    
+    should "identify the duration of the request" do
+      assert_parses duration: 196
     end
   end
   
