@@ -10,8 +10,6 @@ module Logeater
       [A-Z],\s
     \[(?<timestamp>[^\s\]]+)(?:\s[^\]]*)?\]\s+
       (?<log_level>[A-Z]+)\s+\-\-\s:\s+
-    \[(?<subdomain>[^\]]+)\]\s
-    \[(?<uuid>[\w\-]{36})\]\s+
       (?<message>.*)
     $/x.freeze
     
@@ -25,6 +23,12 @@ module Logeater
     /x.freeze
     
     HTTP_VERBS = %w{DELETE GET HEAD OPTIONS PATCH POST PUT}.freeze
+    
+    REQUEST_LINE_MATCHER = /^
+    \[(?<subdomain>[^\]]+)\]\s
+    \[(?<uuid>[\w\-]{36})\]\s+
+      (?<message>.*)
+    $/x.freeze
     
     REQUEST_STARTED_MATCHER = /^
       Started\s
@@ -53,32 +57,45 @@ module Logeater
     /x.freeze # optional: (Views: 0.1ms | ActiveRecord: 50.0ms)
     
     def parse!(line)
-      match = line.match(LINE_MATCHER)
+      match = line.match LINE_MATCHER
       raise UnmatchedLine.new(line) unless match
       
       timestamp = match["timestamp"]
-      time = timestamp.match(TIMESTAMP_MATCHER)
+      time = timestamp.match TIMESTAMP_MATCHER
       raise MalformedTimestamp.new(timestamp) unless time
       time = Time.new(*time.captures[0...-1], BigDecimal.new(time["seconds"]))
       
       message = match["message"]
-      type = identify_message(message)
       
-      { timestamp: time,
+      result = {
+        type: :generic,
+        timestamp: time,
         log_level: match["log_level"],
-        subdomain: match["subdomain"],
+        message: message }
+      
+      result.merge(parse_message(message))
+    end
+    
+    def parse_message(message)
+      match = message.match REQUEST_LINE_MATCHER
+      return {} unless match
+      
+      message = match["message"]
+      type = identify_request_line_type(message)
+      
+      { subdomain: match["subdomain"],
         uuid: match["uuid"],
         type: type,
         message: message }.merge(
         custom_attributes_for(type, message))
     end
     
-    def identify_message(message)
+    def identify_request_line_type(message)
       return :request_started if message =~ /^Started (#{HTTP_VERBS.join("|")})/
       return :request_controller if message.start_with? "Processing by "
       return :request_params if message.start_with? "Parameters: "
       return :request_completed if message =~ /^Completed \d\d\d/
-      :generic
+      :request_line
     end
     
     def custom_attributes_for(type, message)
@@ -90,7 +107,7 @@ module Logeater
       attributes
     end
     
-    def parse_generic_message(message)
+    def parse_request_line_message(message)
       {}
     end
     
