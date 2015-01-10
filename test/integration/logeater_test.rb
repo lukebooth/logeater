@@ -3,6 +3,7 @@ require "test_helper"
 class LogeaterTest < ActiveSupport::TestCase
   attr_reader :logfile
   
+  
   context "Given the log of a single request, it" do
     setup do
       @logfile = File.expand_path("../../data/single_request.log", __FILE__)
@@ -41,6 +42,20 @@ class LogeaterTest < ActiveSupport::TestCase
       assert_equal "OK", request.http_response
     end
   end
+  
+  
+  context "Given a gzipped logfile, it" do
+    setup do
+      @logfile = File.expand_path("../../data/single_request.gz", __FILE__)
+    end
+    
+    should "create an entry in the database" do
+      assert_difference "Logeater::Request.count", +1 do
+        reader.import
+      end
+    end
+  end
+  
   
 private
   

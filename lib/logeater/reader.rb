@@ -1,4 +1,5 @@
 require "logeater/request"
+require "zlib"
 
 module Logeater
   class Reader
@@ -14,7 +15,7 @@ module Logeater
     
     
     def import
-      File.open(path).each do |line|
+      each_line do |line|
         attributes = parser.parse!(line)
         
         if attributes[:type] == :request_started
@@ -49,6 +50,13 @@ module Logeater
     
   private
     attr_reader :parser, :requests
+    
+    def each_line(&block)
+      file = File.extname(path) == ".gz" ? Zlib::GzipReader.open(path) : File.open(path)
+      file.each_line(&block)
+    ensure
+      file.close
+    end
     
     def save!(attributes)
       Logeater::Request.create!(attributes.merge(app: app, logfile: filename))
