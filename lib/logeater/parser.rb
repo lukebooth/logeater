@@ -1,3 +1,6 @@
+require "addressable/uri"
+require "active_support/inflector"
+
 module Logeater
   class Parser
     
@@ -98,9 +101,10 @@ module Logeater
     def parse_request_started_message(message)
       match = message.match(REQUEST_STARTED_MATCHER)
       return unless match
+      uri = Addressable::URI.parse(match["path"])
       
       { http_method: match["http_method"],
-        path: match["path"],
+        path: uri.path,
         remote_ip: match["remote_ip"] }
     end
     
@@ -108,7 +112,7 @@ module Logeater
       match = message.match(REQUEST_CONTROLLER_MATCHER)
       return unless match
       
-      { controller: match["controller"],
+      { controller: match["controller"].underscore,
         action: match["action"],
         format: match["format"] }
     end

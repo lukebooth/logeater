@@ -58,8 +58,8 @@ class ParserTest < ActiveSupport::TestCase
       assert_parses http_method: "GET"
     end
     
-    should "identify the path" do
-      assert_parses path: "/people/1035826228?refresh_page=true"
+    should "identify the path (without params)" do
+      assert_parses path: "/people/1035826228"
     end
     
     should "identify the remote client's IP address" do
@@ -79,7 +79,7 @@ class ParserTest < ActiveSupport::TestCase
     end
     
     should "identify the controller and action" do
-      assert_parses controller: "PeopleController", action: "show"
+      assert_parses controller: "people_controller", action: "show"
     end
     
     should "identify the format requested" do
