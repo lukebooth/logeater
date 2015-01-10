@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Bob Lail"]
   spec.email         = ["bob.lail@cph.org"]
   spec.summary       = %q{Parses log files and imports them into a database}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
+  spec.description   = %q{Parses log files and imports them into a database}
   spec.homepage      = ""
   spec.license       = "MIT"
 
