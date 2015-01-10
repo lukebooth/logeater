@@ -45,6 +45,54 @@ class ParserTest < ActiveSupport::TestCase
   
   
   
+  context "given the \"Started\" line, it" do
+    setup do
+      @line = "I, [2015-01-10T15:18:12.064392 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496] Started GET \"/people/1035826228?refresh_page=true\" for 71.218.222.249 at 2015-01-10 15:18:12 +0000"
+    end
+    
+    should "identify the line as :request_started" do
+      assert_parses type: :request_started
+    end
+  end
+  
+  
+  
+  context "given the \"Processing by\" line, it" do
+    setup do
+      @line = "I, [2015-01-10T15:18:12.067034 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496] Processing by PeopleController#show as JS"
+    end
+    
+    should "identify the line as :request_controller" do
+      assert_parses type: :request_controller
+    end
+  end
+  
+  
+  
+  context "given the \"Parameters\" line, it" do
+    setup do
+      @line = "I, [2015-01-10T15:18:12.067134 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496]   Parameters: {\"refresh_page\"=>\"true\", \"id\"=>\"1035826228\"}"
+    end
+    
+    should "identify the line as :request_params" do
+      assert_parses type: :request_params
+    end
+  end
+  
+  
+  
+  context "given the \"Completed\" line, it" do
+    setup do
+      @line = "I, [2015-01-10T15:18:12.262903 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496] Completed 200 OK in 196ms (Views: 0.1ms | ActiveRecord: 50.0ms)"
+    end
+    
+    should "identify the line as :request_completed" do
+      assert_parses type: :request_completed
+    end
+  end
+  
+  
+  
 private
   
   def assert_parses(expectations)
