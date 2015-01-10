@@ -1,5 +1,6 @@
 require "addressable/uri"
 require "active_support/inflector"
+require "logeater/params_parser"
 require "logeater/parser_errors"
 
 module Logeater
@@ -133,12 +134,12 @@ module Logeater
     def parse_request_params_message(message)
       match = message.match(REQUEST_PARAMETERS_MATCHER)
       return unless match
+      params = ParamsParser.new(match["params"])
       
-      params = match["params"]
-      { params: eval(params) } # <-- dangerous!
-    rescue Exception
+      { params: params.parse! }
+    rescue Logeater::Parser::MalformedParameters
       log "Unable to parse parameters: #{match["params"].inspect}"
-      { params: params }
+      { params: match["params"] }
     end
     
     def parse_request_completed_message(message)

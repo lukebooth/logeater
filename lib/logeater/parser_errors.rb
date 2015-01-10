@@ -18,5 +18,17 @@ module Logeater
         super "Malformed timestamp", input
       end
     end
+    
+    class MalformedParameters < Error
+      def initialize(input)
+        super "Malformed parameters", input
+      end
+    end
+    
+    class ParserNotImplemented < Error
+      def initialize(input)
+        super "Unable to parse", input
+      end
+    end
   end
 end
