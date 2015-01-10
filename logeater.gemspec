@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = Logeater::VERSION
   spec.authors       = ["Bob Lail"]
   spec.email         = ["bob.lail@cph.org"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
+  spec.summary       = %q{Parses log files and imports them into a database}
   spec.description   = %q{TODO: Write a longer description. Optional.}
   spec.homepage      = ""
   spec.license       = "MIT"
