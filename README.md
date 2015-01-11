@@ -1,28 +1,44 @@
 # Logeater
 
-TODO: Write a gem description
+Parses log files and imports them into a database
 
-## Installation
+### Features
 
-Add this line to your application's Gemfile:
+ - Can read from plain text or gzipped log files
+ - [Parses parameters safely](https://github.com/concordia-publishing-house/logeater/blob/master/lib/logeater/params_parser.rb)
+ - Can import a batch of files at once
+ - Parses [these attributes](https://github.com/concordia-publishing-house/logeater/blob/master/db/schema.rb#L19-L32) of requests
 
-```ruby
-gem "logeater"
-```
 
-And then execute:
+### Usage
 
-    $ bundle
+Clone the gem
 
-Or install it yourself as:
+    git clone git@github.com:concordia-publishing-house/logeater.git
+    bundle
 
-    $ gem install logeater
+Create the development database
 
-## Usage
+    bundle exec rake db:create db:migrate
 
-TODO: Write usage instructions here
+Install the gem
 
-## Contributing
+    bundle exec rake install
+
+Import log files
+
+    logeater my_app ~/Desktop/logs/*.gz
+
+
+### To Do
+
+ - Set up databases without cloning the gem?
+ - Import to a [Heroku Postgres database](https://dashboard.heroku.com/apps/logs-production)?
+ - Parse other kinds of logs?
+ - Collect other data from Rails logs?
+
+
+### Contributing
 
 1. Fork it ( https://github.com/[my-github-username]/logeater/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
