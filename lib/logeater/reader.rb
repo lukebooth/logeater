@@ -42,6 +42,18 @@ module Logeater
       @verbose
     end
     
+    def each_line
+      File.open(path) do |file|
+        io = File.extname(path) == ".gz" ? Zlib::GzipReader.new(file) : file
+        pbar = ProgressBar.create(title: filename, total: file.size, autofinish: false) if show_progress?
+        io.each_line do |line|
+          yield line
+          pbar.progress = file.pos if show_progress?
+        end
+        pbar.finish if show_progress?
+      end
+    end
+    alias :scan :each_line
     
     
   private
@@ -87,18 +99,6 @@ module Logeater
       $stderr.puts "\e[90m#{$!.message}\e[0m" if verbose?
     rescue Logeater::Parser::Error
       log $!.message
-    end
-    
-    def each_line
-      File.open(path) do |file|
-        io = File.extname(path) == ".gz" ? Zlib::GzipReader.new(file) : file
-        pbar = ProgressBar.create(title: filename, total: file.size, autofinish: false) if show_progress?
-        io.each_line do |line|
-          yield line
-          pbar.progress = file.pos if show_progress?
-        end
-        pbar.finish if show_progress?
-      end
     end
     
     def save!
