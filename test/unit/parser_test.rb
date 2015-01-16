@@ -101,7 +101,7 @@ class ParserTest < ActiveSupport::TestCase
     end
     
     should "identify the controller and action" do
-      assert_parses controller: "api/v1/people_controller", action: "show"
+      assert_parses controller: "api/v1/people", action: "show"
     end
     
     should "identify the format requested" do

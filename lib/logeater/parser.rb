@@ -126,7 +126,7 @@ module Logeater
       match = message.match(REQUEST_CONTROLLER_MATCHER)
       return unless match
       
-      { controller: match["controller"].underscore,
+      { controller: match["controller"].underscore.gsub(/_controller$/, ""),
         action: match["action"],
         format: match["format"] }
     end

@@ -34,7 +34,7 @@ class LogeaterTest < ActiveSupport::TestCase
       assert_equal "GET", request.http_method
       assert_equal "/people/1035826228", request.path
       assert_equal params, request.params
-      assert_equal "people_controller", request.controller
+      assert_equal "people", request.controller
       assert_equal "show", request.action
       assert_equal "71.218.222.249", request.remote_ip
       assert_equal "JS", request.format
