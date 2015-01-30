@@ -8,7 +8,5 @@ module Logeater
     
     serialize :params, ActiveRecord::Coders::JSON
     
-    
-    
   end
 end

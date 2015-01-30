@@ -16,6 +16,11 @@ class ParamsParserTest < ActiveSupport::TestCase
       assert_parses '{"person_id"=>10.56}' => {"person_id"=>10.56}
     end
     
+    should "handle negatives" do
+      assert_parses '{"person_id"=>-10}' => {"person_id"=>-10}
+      assert_parses '{"person_id"=>-10.56}' => {"person_id"=>-10.56}
+    end
+    
     should "handle booleans" do
       assert_parses '{"visible"=>true}' => {"visible"=>true}
     end

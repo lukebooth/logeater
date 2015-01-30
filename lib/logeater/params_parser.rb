@@ -40,9 +40,14 @@ module Logeater
       
       # [:@int, "10", [1, 14]]
       when :@int then sexp[1].to_i
-        
+      
       # [:@float, "10.56", [1, 14]]
       when :@float then sexp[1].to_f
+      
+      # [:unary, :-@, [:@float, \\\"173.41\\\", [1, 17285]]]
+      when :unary then
+        return -identify(sexp[2]) if sexp[1] == :-@
+        raise Parser::ParserNotImplemented, "Unknown unary operator: #{sexp[1].inspect}"
       
       # [:var_ref, [:@kw, "true", [1, 12]]]
       when :var_ref then
@@ -54,7 +59,7 @@ module Logeater
       # [:array, [[:@int, "1", [1, 9]], [:@int, "4", [1, 12]]]]
       # [:array, nil]
       when :array then sexp[1] ? sexp[1].map { |sexp| identify(sexp) } : []
-        
+      
       #  [:hash,
       #    [:assoclist_from_args,
       #     [[:assoc_new,
