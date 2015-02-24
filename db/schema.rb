@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150207183757) do
+ActiveRecord::Schema.define(:version => 20150224021844) do
 
   create_table "requests", :force => true do |t|
     t.string   "app",           :null => false
@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(:version => 20150207183757) do
     t.datetime "completed_at"
     t.integer  "duration"
     t.string   "http_method"
-    t.string   "path"
+    t.text     "path"
     t.jsonb    "params"
     t.string   "controller"
     t.string   "action"
