@@ -155,6 +155,16 @@ class ParserTest < ActiveSupport::TestCase
     end
   end
   
+  context "when the \"Completed\" line doesn't have a textual description of the status, it" do
+    setup do
+      @line = "I, [2015-01-10T15:18:12.262903 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496] Completed 307 in 0.8ms"
+    end
+    
+    should "be cool with that" do
+      assert_parses http_status: 307, http_response: nil
+    end
+  end
+  
   context "when the \"Completed\" line contains a breakdown of times, it" do
     setup do
       @line = "I, [2015-01-10T15:18:12.262903 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496] Completed 200 OK in 196ms (Views: 0.1ms | ActiveRecord: 50.0ms)"

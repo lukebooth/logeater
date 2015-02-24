@@ -53,7 +53,7 @@ module Logeater
     REQUEST_COMPLETED_MATCHER = /^
       Completed\s
       (?<http_status>\d\d\d)\s
-      (?<http_response>.*)\sin\s
+      (?:(?<http_response>.*)\s)?in\s
       (?<duration>[\d\.]+)(?<units>ms)\b
     /x.freeze # optional: (Views: 0.1ms | ActiveRecord: 50.0ms)
     
