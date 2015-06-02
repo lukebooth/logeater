@@ -1,17 +1,30 @@
 #!/usr/bin/env ruby
 
 require "logeater"
+require "optparse"
+
+$force = false
+OptionParser.new do |args|
+  args.on("--force", "Imports all specified files, overwiting previous imports if necessary") do
+    $force = true
+  end
+end.parse!
 
 app = ARGV.shift
 unless app
-  puts "USAGE: logeater <app> <files...>"
+  puts "USAGE: logeater [--force] <app> <files...>"
   exit
 end
 
 files = ARGV
 if files.empty?
-  puts "USAGE: logeater <app> <files...>"
+  puts "USAGE: logeater [--force] <app> <files...>"
   exit
+end
+
+unless $force
+  imported_files = Logeater::Request.where(app: app).pluck("DISTINCT logfile")
+  files.reject! { |file| imported_files.member? File.basename(files[0]) }
 end
 
 started_all = Time.now
