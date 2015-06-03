@@ -66,7 +66,7 @@ module Logeater
       
       if attributes[:type] == :request_started
         requests[attributes[:uuid]] = attributes
-          .slice(:uuid, :subdomain, :http_method, :path, :remote_ip)
+          .slice(:uuid, :subdomain, :http_method, :path, :remote_ip, :user_id, :tester_bar)
           .merge(started_at: attributes[:timestamp], logfile: filename, app: app)
         return
       end
