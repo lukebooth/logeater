@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150224021844) do
+ActiveRecord::Schema.define(:version => 20150602022241) do
 
   create_table "requests", :force => true do |t|
     t.string   "app",           :null => false
@@ -32,6 +32,8 @@ ActiveRecord::Schema.define(:version => 20150224021844) do
     t.string   "http_response"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.integer  "user_id"
+    t.boolean  "tester_bar"
   end
 
   add_index "requests", ["app"], :name => "index_requests_on_app"

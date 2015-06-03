@@ -67,6 +67,56 @@ class ParserTest < ActiveSupport::TestCase
   
   
   
+  context "given a log line for a Rails request" do
+    context "that indicates the current user (who was logged in with the tester bar), it" do
+      setup do
+        @line = "I, [2015-01-10T15:18:05.850839 #18070]  INFO -- : [livingsaviorco] [2d89d962-57c4-47c9-a9e9-6a16a5f22a12] [user.902544074:cph] [gzip] Compress reponse by 42.2 KB (83.3%)  (1.4ms)"
+      end
+      
+      should "identify the user's id" do
+        assert_parses user_id: 902544074
+      end
+      
+      should "notice that the user was logged-in with the tester bar" do
+        assert_parses tester_bar: true
+      end
+    
+      should "identify the remainder of the log message" do
+        assert_parses message: "[gzip] Compress reponse by 42.2 KB (83.3%)  (1.4ms)"
+      end
+    end
+    
+    context "that indicates the current user (who was not logged in with the tester bar), it" do
+      setup do
+        @line = "I, [2015-01-10T15:18:05.850839 #18070]  INFO -- : [livingsaviorco] [2d89d962-57c4-47c9-a9e9-6a16a5f22a12] [user.902544074] [gzip] Compress reponse by 42.2 KB (83.3%)  (1.4ms)"
+      end
+      
+      should "identify the user's id" do
+        assert_parses user_id: 902544074
+      end
+      
+      should "notice that the user was not logged-in with the tester bar" do
+        assert_parses tester_bar: false
+      end
+    
+      should "identify the remainder of the log message" do
+        assert_parses message: "[gzip] Compress reponse by 42.2 KB (83.3%)  (1.4ms)"
+      end
+    end
+    
+    context "that indicates that the user is logged out, it" do
+      setup do
+        @line = "I, [2015-01-10T15:18:05.850839 #18070]  INFO -- : [livingsaviorco] [2d89d962-57c4-47c9-a9e9-6a16a5f22a12] [guest] [gzip] Compress reponse by 42.2 KB (83.3%)  (1.4ms)"
+      end
+    
+      should "identify the remainder of the log message" do
+        assert_parses message: "[gzip] Compress reponse by 42.2 KB (83.3%)  (1.4ms)"
+      end
+    end
+  end
+  
+  
+  
   context "given the \"Started\" line, it" do
     setup do
       @line = "I, [2015-01-10T15:18:12.064392 #2354]  INFO -- : [livingsaviorco] [0fc5154a-c288-4bad-9c7a-de3d7e7d2496] Started GET \"/people/1035826228?refresh_page=true\" for 71.218.222.249 at 2015-01-10 15:18:12 +0000"

@@ -28,6 +28,7 @@ module Logeater
     REQUEST_LINE_MATCHER = /^
     \[(?<subdomain>[^\]]+)\]\s
     \[(?<uuid>[\w\-]{36})\]\s+
+ (?:\[(?:guest|user\.(?<user_id>\d+)(?<tester_bar>:cph)?)\]\s+)?
       (?<message>.*)
     $/x.freeze
     
@@ -87,6 +88,8 @@ module Logeater
       { subdomain: match["subdomain"],
         uuid: match["uuid"],
         type: type,
+        user_id: match["user_id"] && match["user_id"].to_i,
+        tester_bar: !!match["tester_bar"],
         message: message }.merge(
         custom_attributes_for(type, message))
     end
