@@ -23,8 +23,6 @@ module Logeater
       (?<seconds>\d\d(?:\.\d+))
     /x.freeze
     
-    HTTP_VERBS = %w{DELETE GET HEAD OPTIONS PATCH POST PUT}.freeze
-    
     REQUEST_LINE_MATCHER = /^
     \[(?<subdomain>[^\]]+)\]\s
     \[(?<uuid>[\w\-]{36})\]\s+
@@ -83,73 +81,61 @@ module Logeater
       return {} unless match
       
       message = match["message"]
-      type = identify_request_line_type(message)
       
       { subdomain: match["subdomain"],
         uuid: match["uuid"],
-        type: type,
+        type: :request_line,
         user_id: match["user_id"] && match["user_id"].to_i,
         tester_bar: !!match["tester_bar"],
         message: message }.merge(
-        custom_attributes_for(type, message))
+        parse_message_extra(message))
     end
     
-    def identify_request_line_type(message)
-      return :request_started if message =~ /^Started (#{HTTP_VERBS.join("|")})/
-      return :request_controller if message.start_with? "Processing by "
-      return :request_params if message.start_with? "Parameters: "
-      return :request_completed if message =~ /^Completed \d\d\d/
-      :request_line
-    end
-    
-    def custom_attributes_for(type, message)
-      attributes = send :"parse_#{type}_message", message
-      unless attributes
-        log "Unable to parse message identified as #{type.inspect}: #{message.inspect}"
-        return {}
-      end
-      attributes
-    end
-    
-    def parse_request_line_message(message)
+    def parse_message_extra(message)
+      match = message.match(REQUEST_STARTED_MATCHER)
+      return parse_request_started_message(match) if match
+      
+      match = message.match(REQUEST_CONTROLLER_MATCHER)
+      return parse_request_controller_message(match) if match
+      
+      match = message.match(REQUEST_PARAMETERS_MATCHER)
+      return parse_request_params_message(match) if match
+      
+      match = message.match(REQUEST_COMPLETED_MATCHER)
+      return parse_request_completed_message(match) if match
+      
       {}
     end
     
-    def parse_request_started_message(message)
-      match = message.match(REQUEST_STARTED_MATCHER)
-      return unless match
+    def parse_request_started_message(match)
       uri = Addressable::URI.parse(match["path"])
       
-      { http_method: match["http_method"],
+      { type: :request_started,
+        http_method: match["http_method"],
         path: uri.path,
         remote_ip: match["remote_ip"] }
     end
     
-    def parse_request_controller_message(message)
-      match = message.match(REQUEST_CONTROLLER_MATCHER)
-      return unless match
-      
-      { controller: match["controller"].underscore.gsub(/_controller$/, ""),
+    def parse_request_controller_message(match)
+      { type: :request_controller,
+        controller: match["controller"].underscore.gsub(/_controller$/, ""),
         action: match["action"],
         format: match["format"] }
     end
     
-    def parse_request_params_message(message)
-      match = message.match(REQUEST_PARAMETERS_MATCHER)
-      return unless match
+    def parse_request_params_message(match)
       params = ParamsParser.new(match["params"])
       
-      { params: params.parse! }
+      { type: :request_params,
+        params: params.parse! }
     rescue Logeater::Parser::MalformedParameters
       log "Unable to parse parameters: #{match["params"].inspect}"
       { params: match["params"] }
     end
     
-    def parse_request_completed_message(message)
-      match = message.match(REQUEST_COMPLETED_MATCHER)
-      return unless match
-      
-      { http_status: match["http_status"].to_i,
+    def parse_request_completed_message(match)
+      { type: :request_completed,
+        http_status: match["http_status"].to_i,
         http_response: match["http_response"],
         duration: match["duration"].to_i }
     end
