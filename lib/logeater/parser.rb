@@ -108,26 +108,22 @@ module Logeater
     end
     
     def parse_request_started_message(match)
-      uri = Addressable::URI.parse(match["path"])
-      
       { type: :request_started,
         http_method: match["http_method"],
-        path: uri.path,
+        path: parsed_uri[match["path"]],
         remote_ip: match["remote_ip"] }
     end
     
     def parse_request_controller_message(match)
       { type: :request_controller,
-        controller: match["controller"].underscore.gsub(/_controller$/, ""),
+        controller: normalized_controller_name[match["controller"]],
         action: match["action"],
         format: match["format"] }
     end
     
     def parse_request_params_message(match)
-      params = ParamsParser.new(match["params"])
-      
       { type: :request_params,
-        params: params.parse! }
+        params: ParamsParser.new(match["params"]).parse! }
     rescue Logeater::Parser::MalformedParameters
       log "Unable to parse parameters: #{match["params"].inspect}"
       { params: match["params"] }
@@ -145,6 +141,22 @@ module Logeater
     def log(statement)
       $stderr.puts "\e[33m#{statement}\e[0m"
     end
+    
+    
+    
+    def initialize
+      @normalized_controller_name = Hash.new do |hash, controller_name|
+        hash[controller_name] = controller_name.underscore.gsub(/_controller$/, "")
+      end
+      
+      @parsed_uri = Hash.new do |hash, uri|
+        hash[uri] = Addressable::URI.parse(uri).path
+      end
+    end
+    
+  private
+    attr_reader :normalized_controller_name,
+                :parsed_uri
     
   end
 end
