@@ -14,15 +14,6 @@ module Logeater
       (?<message>.*)
     $/x.freeze
     
-    TIMESTAMP_MATCHER = /
-      (?<year>\d\d\d\d)\-
-      (?<month>\d\d)\-
-      (?<day>\d\d)T
-      (?<hours>\d\d):
-      (?<minutes>\d\d):
-      (?<seconds>\d\d(?:\.\d+))
-    /x.freeze
-    
     REQUEST_LINE_MATCHER = /^
     \[(?<subdomain>[^\]]+)\]\s
     \[(?<uuid>[\w\-]{36})\]\s+
@@ -60,16 +51,11 @@ module Logeater
       match = line.match LINE_MATCHER
       raise UnmatchedLine.new(line) unless match
       
-      timestamp = match["timestamp"]
-      time = timestamp.match TIMESTAMP_MATCHER
-      raise MalformedTimestamp.new(timestamp) unless time
-      time = Time.new(*time.captures[0...-1], BigDecimal.new(time["seconds"]))
-      
       message = match["message"]
       
       result = {
         type: :generic,
-        timestamp: time,
+        timestamp: match["timestamp"],
         log_level: match["log_level"],
         message: message }
       

@@ -33,7 +33,7 @@ class ParserTest < ActiveSupport::TestCase
     end
     
     should "identify the time, including milliseconds" do
-      assert_parses timestamp: Time.new(2015, 1, 10, 15, 18, BigDecimal.new("5.850839"))
+      assert_parses timestamp: "2015-01-10T15:18:05.850839"
     end
     
     should "identify the remainder of the log message" do

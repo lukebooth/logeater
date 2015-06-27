@@ -67,7 +67,7 @@ module Logeater
       if attributes[:type] == :request_started
         requests[attributes[:uuid]] = attributes
           .slice(:uuid, :subdomain, :http_method, :path, :remote_ip, :user_id, :tester_bar)
-          .merge(started_at: attributes[:timestamp], logfile: filename, app: app)
+          .merge(started_at: Time.parse(attributes[:timestamp]), logfile: filename, app: app)
         return
       end
       
@@ -87,7 +87,7 @@ module Logeater
       when :request_completed
         request_attributes.merge! attributes
           .slice(:http_status, :http_response, :duration)
-          .merge(completed_at: attributes[:timestamp])
+          .merge(completed_at: Time.parse(attributes[:timestamp]))
         
         completed_requests.push Logeater::Request.new(request_attributes)
         requests.delete attributes[:uuid]
