@@ -1,12 +1,14 @@
 ENV["RAILS_ENV"] = "test"
 require "rubygems"
-require "rails"
-require "rails/test_help"
+require "active_support/testing/autorun"
+require "active_support/test_case"
 require "pry"
 require "database_cleaner"
 require "shoulda/context"
-require "turn"
 require "logeater"
+
+require "minitest/reporters"
+Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new]
 
 load File.expand_path("../../db/schema.rb", __FILE__)
 
