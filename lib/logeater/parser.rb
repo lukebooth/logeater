@@ -51,15 +51,13 @@ module Logeater
       match = line.match LINE_MATCHER
       raise UnmatchedLine.new(line) unless match
       
-      message = match["message"]
-      
       result = {
         type: :generic,
         timestamp: match["timestamp"],
         log_level: match["log_level"],
-        message: message }
-      
-      result.merge(parse_message(message))
+        message: match["message"]
+      }.merge(
+        parse_message(match["message"]))
     end
     
     def parse_message(message)
@@ -73,7 +71,8 @@ module Logeater
         type: :request_line,
         user_id: match["user_id"] && match["user_id"].to_i,
         tester_bar: !!match["tester_bar"],
-        message: message }.merge(
+        message: message
+      }.merge(
         parse_message_extra(message))
     end
     
