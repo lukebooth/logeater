@@ -1,6 +1,7 @@
 require "logeater/request"
 require "zlib"
 require "ruby-progressbar"
+require "oj"
 
 module Logeater
   class Reader
@@ -24,10 +25,29 @@ module Logeater
       remove_existing_entries!
       import
     end
-      
+    
     def import
-      each_line(&method(:process_line!))
+      each_request do |attributes|
+        completed_requests.push Logeater::Request.new(attributes)
+        save! if completed_requests.length >= batch_size
+      end
       save!
+    end
+    
+    def parse(to: $stdout)
+      to << "["
+      first = true
+      each_request do |attributes|
+        if first
+          first = false
+        else
+          to << ",\n"
+        end
+
+        to << Oj.dump(attributes, mode: :compat)
+      end
+    ensure
+      to << "]"
     end
     
     def remove_existing_entries!
@@ -45,7 +65,7 @@ module Logeater
     def each_line
       File.open(path) do |file|
         io = File.extname(path) == ".gz" ? Zlib::GzipReader.new(file) : file
-        pbar = ProgressBar.create(title: filename, total: file.size, autofinish: false) if show_progress?
+        pbar = ProgressBar.create(title: filename, total: file.size, autofinish: false, output: $stderr) if show_progress?
         io.each_line do |line|
           yield line
           pbar.progress = file.pos if show_progress?
@@ -55,11 +75,23 @@ module Logeater
     end
     alias :scan :each_line
     
+    def each_request
+      count = 0
+      each_line do |line|
+        process_line! line do |request|
+          yield request
+          count += 1
+        end
+      end
+      count
+    end
+    
+    
     
   private
     attr_reader :parser, :requests, :completed_requests
     
-    def process_line!(line)
+    def process_line!(line, &block)
       attributes = parser.parse!(line)
       
       return if [:generic, :request_line].member? attributes[:type]
@@ -67,7 +99,7 @@ module Logeater
       if attributes[:type] == :request_started
         requests[attributes[:uuid]] = attributes
           .slice(:uuid, :subdomain, :http_method, :path, :remote_ip, :user_id, :tester_bar)
-          .merge(started_at: Time.parse(attributes[:timestamp]), logfile: filename, app: app)
+          .merge(started_at: attributes[:timestamp], logfile: filename, app: app)
         return
       end
       
@@ -87,12 +119,10 @@ module Logeater
       when :request_completed
         request_attributes.merge! attributes
           .slice(:http_status, :http_response, :duration)
-          .merge(completed_at: Time.parse(attributes[:timestamp]))
+          .merge(completed_at: attributes[:timestamp])
         
-        completed_requests.push Logeater::Request.new(request_attributes)
+        yield request_attributes
         requests.delete attributes[:uuid]
-        
-        save! if completed_requests.length >= batch_size
       end
       
     rescue Logeater::Parser::UnmatchedLine

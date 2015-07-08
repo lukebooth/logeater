@@ -28,8 +28,8 @@ class LogeaterTest < ActiveSupport::TestCase
       assert_equal "single_request.log", request.logfile
       assert_equal "0fc5154a-c288-4bad-9c7a-de3d7e7d2496", request.uuid
       assert_equal "livingsaviorco", request.subdomain
-      assert_equal Time.new(2015, 1, 10, 15, 18, BigDecimal.new("12.064392")), request.started_at
-      assert_equal Time.new(2015, 1, 10, 15, 18, BigDecimal.new("12.262903")), request.completed_at
+      assert_equal Time.utc(2015, 1, 10, 15, 18, BigDecimal.new("12.064392")), request.started_at
+      assert_equal Time.utc(2015, 1, 10, 15, 18, BigDecimal.new("12.262903")), request.completed_at
       assert_equal 196, request.duration
       assert_equal "GET", request.http_method
       assert_equal "/people/1035826228", request.path
