@@ -105,7 +105,7 @@ module Logeater
       
       request_attributes = requests[attributes[:uuid]]
       unless request_attributes
-        log "Attempting to record #{attributes[:type].inspect}; but there is no request started with UUID #{attributes[:uuid].inspect}"
+        log "Attempting to record #{attributes[:type].inspect}; but there is no request started with UUID #{attributes[:uuid].inspect}" if verbose?
         return
       end
       

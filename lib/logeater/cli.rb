@@ -34,6 +34,8 @@ module Logeater
     end
 
     option :force, type: :boolean, desc: "Imports all specified files, overwiting previous imports if necessary"
+    option :progress, type: :boolean, desc: "Renders a progress bar while importing"
+    option :verbose, type: :boolean
     desc "import APP FILES", "imports files"
     def import(app, *files)
       unless options[:force]
@@ -48,7 +50,7 @@ module Logeater
 
       started_all = Time.now
       files.each_with_index do |file, i|
-        reader = Logeater::Reader.new(app, file, progress: true)
+        reader = Logeater::Reader.new(app, file, options.slice(:progress, :verbose))
         reader.remove_existing_entries!
 
         started_count = Logeater::Request.count
