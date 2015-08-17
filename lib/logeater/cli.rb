@@ -50,6 +50,10 @@ module Logeater
 
       started_all = Time.now
       files.each_with_index do |file, i|
+        $stderr.puts " > \e[34mImporting \e[1m#{File.basename(file)}\e[0;34m (%d of %d)\e[0m\n\n" % [
+          i + 1,
+          files.length ]
+
         reader = Logeater::Reader.new(app, file, options.slice(:progress, :verbose))
         reader.remove_existing_entries!
 
