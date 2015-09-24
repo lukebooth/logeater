@@ -20,13 +20,13 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "activerecord", "~> 4.2.3"
   spec.add_dependency "activesupport", "~> 4.2.3"
-  spec.add_dependency "pg"
-  spec.add_dependency "standalone_migrations"
+  spec.add_dependency "pg", "~> 0.18.3"
+  spec.add_dependency "standalone_migrations", "~> 4.0.0"
   spec.add_dependency "addressable"
   spec.add_dependency "ruby-progressbar"
-  spec.add_dependency "activerecord-import"
-  spec.add_dependency "thor"
-  spec.add_dependency "oj"
+  spec.add_dependency "activerecord-import", "~> 0.10.0"
+  spec.add_dependency "thor", "~> 0.19.1"
+  spec.add_dependency "oj", "~> 2.12.14"
 
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
