@@ -1,6 +1,6 @@
 # Logeater
 
-Parses log files and imports them into a database
+Parses log files and imports them into a database or converts them to json
 
 ### Features
 
@@ -12,30 +12,17 @@ Parses log files and imports them into a database
 
 ### Usage
 
-Clone the gem
 
-    git clone git@github.com:concordia-publishing-house/logeater.git
-    bundle
+###### Importing log files
 
-Create the development database
+    gem install logeater
+    DATABASE_URL=<production database url> logeater import <app name> <path to logs>/*.gz
 
-    bundle exec rake db:create db:migrate
+###### Converting log files to JSON
 
-Install the gem
+    gem install logeater
+    logeater parse <app name> <path to logs>/*.gz > parsed-logs.json
 
-    bundle exec rake install
-
-Import log files
-
-    logeater my_app ~/Desktop/logs/*.gz
-
-
-### To Do
-
- - Set up databases without cloning the gem?
- - Import to a [Heroku Postgres database](https://dashboard.heroku.com/apps/logs-production)?
- - Parse other kinds of logs?
- - Collect other data from Rails logs?
 
 
 ### Contributing
