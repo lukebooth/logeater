@@ -3,7 +3,7 @@ class CreateRequests < ActiveRecord::Migration
     create_table :requests do |t|
       t.string :app, null: false
       t.string :logfile, null: false
-      
+
       t.string :uuid, null: false
       t.string :subdomain
       t.timestamp :started_at
@@ -18,10 +18,10 @@ class CreateRequests < ActiveRecord::Migration
       t.string :format
       t.integer :http_status
       t.string :http_response
-      
+
       t.timestamps
     end
-    
+
     add_index :requests, :app
     add_index :requests, :logfile
     add_index :requests, :uuid, unique: true

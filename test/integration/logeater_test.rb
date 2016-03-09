@@ -2,27 +2,27 @@ require "test_helper"
 
 class LogeaterTest < ActiveSupport::TestCase
   attr_reader :logfile
-  
-  
+
+
   context "Given the log of a single request, it" do
     setup do
       @logfile = File.expand_path("../../data/single_request.log", __FILE__)
     end
-    
+
     should "identify the name of the logfile" do
       assert_equal "single_request.log", reader.filename
     end
-    
+
     should "create an entry in the database" do
       assert_difference "Logeater::Request.count", +1 do
         reader.import
       end
     end
-    
+
     should "set all the attributes" do
       reader.import
       request = Logeater::Request.first
-      
+
       params = {"refresh_page" => "true", "id" => "1035826228"}
       assert_equal "test", request.app
       assert_equal "single_request.log", request.logfile
@@ -41,40 +41,40 @@ class LogeaterTest < ActiveSupport::TestCase
       assert_equal 200, request.http_status
       assert_equal "OK", request.http_response
     end
-    
+
     should "erase any entries that had already been imported with that app and filename" do
       Logeater::Request.create!(app: app, logfile: "single_request.log", uuid: "1")
       Logeater::Request.create!(app: app, logfile: "single_request.log", uuid: "2")
       Logeater::Request.create!(app: app, logfile: "single_request.log", uuid: "3")
-      
+
       assert_difference "Logeater::Request.count", -2 do
         reader.reimport
       end
     end
   end
-  
-  
+
+
   context "Given a gzipped logfile, it" do
     setup do
       @logfile = File.expand_path("../../data/single_request.gz", __FILE__)
     end
-    
+
     should "create an entry in the database" do
       assert_difference "Logeater::Request.count", +1 do
         reader.import
       end
     end
   end
-  
-  
+
+
 private
-  
+
   def app
     "test"
   end
-  
+
   def reader
     Logeater::Reader.new(app, logfile)
   end
-  
+
 end
