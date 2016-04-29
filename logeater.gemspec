@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "standalone_migrations", "~> 4.0.0"
   spec.add_dependency "addressable"
   spec.add_dependency "ruby-progressbar"
-  spec.add_dependency "activerecord-import", "~> 0.10.0"
+  spec.add_dependency "activerecord-import", "~> 0.10"
   spec.add_dependency "thor", "~> 0.19.1"
   spec.add_dependency "oj", "~> 2.15"
 
