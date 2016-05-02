@@ -136,8 +136,8 @@ module Logeater
 
     def save!
       return if completed_requests.empty?
-      result = Logeater::Request.import(completed_requests)
-      @count += result.num_inserts
+      Logeater::Request.import(completed_requests)
+      @count += completed_requests.length
       completed_requests.clear
     end
 
