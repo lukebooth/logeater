@@ -15,6 +15,7 @@ module Logeater
       @show_progress = options.fetch :progress, false
       @batch_size = options.fetch :batch_size, 500
       @verbose = options.fetch :verbose, false
+      @count = 0
       @requests = {}
       @completed_requests = []
     end
@@ -27,11 +28,13 @@ module Logeater
     end
 
     def import
+      @count = 0
       each_request do |attributes|
         completed_requests.push Logeater::Request.new(attributes)
         save! if completed_requests.length >= batch_size
       end
       save!
+      @count
     end
 
     def parse(to: $stdout)
@@ -133,7 +136,8 @@ module Logeater
 
     def save!
       return if completed_requests.empty?
-      Logeater::Request.import(completed_requests)
+      result = Logeater::Request.import(completed_requests)
+      @count += result.num_inserts
       completed_requests.clear
     end
 
