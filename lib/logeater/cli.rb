@@ -69,7 +69,7 @@ module Logeater
         count = reader.remove_existing_entries!
         finished_at = Time.now
 
-        $stderr.puts "   \e[34mDeleted \e[1m%d\e[0;34m requests for #{file} in \e[1m%.2f\e[0;34m seconds\e[0m\n" % [
+        $stderr.puts "   \e[34mDeleted \e[1m%d\e[0;34m requests for #{reader.filename} in \e[1m%.2f\e[0;34m seconds\e[0m\n" % [
           count,
           finished_at - started_at ]
 
