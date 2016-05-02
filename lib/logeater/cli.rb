@@ -47,7 +47,7 @@ module Logeater
           finished_at - started_at ]
 
         files_count = files.count
-        files.reject! { |file| imported_files.member? File.basename(files[0]) }
+        files.reject! { |file| imported_files.member? File.basename(file) }
 
         $stderr.puts "   \e[34;1m#{files_count}\e[0;34m files passed, \e[1m#{files_count - files.length}\e[0;34m removed as already imported.\e[0m\n\n"
       end
