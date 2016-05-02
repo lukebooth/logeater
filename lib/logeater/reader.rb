@@ -118,7 +118,7 @@ module Logeater
 
       when :request_completed
         request_attributes.merge! attributes
-          .slice(:http_status, :http_response, :duration)
+          .slice(:http_status, :duration)
           .merge(completed_at: attributes[:timestamp])
 
         yield request_attributes

@@ -39,7 +39,6 @@ class LogeaterTest < ActiveSupport::TestCase
       assert_equal "71.218.222.249", request.remote_ip
       assert_equal "JS", request.format
       assert_equal 200, request.http_status
-      assert_equal "OK", request.http_response
     end
 
     should "erase any entries that had already been imported with that app and filename" do
