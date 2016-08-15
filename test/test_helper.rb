@@ -8,7 +8,8 @@ require "shoulda/context"
 require "logeater"
 
 require "minitest/reporters"
-Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new]
+require "minitest/reporters/turn_reporter"
+Minitest::Reporters.use! [Minitest::Reporters::TurnReporter.new]
 
 load File.expand_path("../../db/schema.rb", __FILE__)
 
