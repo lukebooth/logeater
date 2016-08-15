@@ -18,10 +18,12 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "activerecord", "~> 4.2.3"
-  spec.add_dependency "activesupport", "~> 4.2.3"
+  spec.add_dependency "activerecord", ">= 4.2.7", "< 5.1.0"
+  spec.add_dependency "activesupport", ">= 4.2.7", "< 5.1.0"
+  # spec.add_dependency "activerecord", "~> 5.0.0"
+  # spec.add_dependency "activesupport", "~> 5.0.0"
   spec.add_dependency "pg", "~> 0.18.3"
-  spec.add_dependency "standalone_migrations", "~> 4.0.0"
+  spec.add_dependency "standalone_migrations", "~> 5.0.0"
   spec.add_dependency "addressable"
   spec.add_dependency "ruby-progressbar"
   spec.add_dependency "activerecord-import", "~> 0.10"
