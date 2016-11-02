@@ -20,9 +20,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "activerecord", ">= 4.2.7", "< 5.1.0"
   spec.add_dependency "activesupport", ">= 4.2.7", "< 5.1.0"
-  # spec.add_dependency "activerecord", "~> 5.0.0"
-  # spec.add_dependency "activesupport", "~> 5.0.0"
-  spec.add_dependency "pg", "~> 0.18.3"
+  spec.add_dependency "pg", ">= 0.18.0", "< 1.0"
   spec.add_dependency "standalone_migrations", "~> 5.0.0"
   spec.add_dependency "addressable"
   spec.add_dependency "ruby-progressbar"
