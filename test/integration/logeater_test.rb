@@ -66,6 +66,24 @@ class LogeaterTest < ActiveSupport::TestCase
   end
 
 
+  context "Given an app and a timestamp, import_since" do
+    setup do
+      log_sample = File.open(File.expand_path("./test/data/single_request.log"))
+      log_sample.lines do |line|
+        Logeater::Event.create(ep_app: app, original: line)
+      end
+      @logfile = "./test/data/#{app}"
+    end
+
+    should "import events since that given timestamp" do
+      assert_difference "Logeater::Request.count", +1 do
+        Logeater::Writer.new(app, Logeater::Event.all, logfile).write!
+        reader.import
+      end
+    end
+  end
+
+
 private
 
   def app

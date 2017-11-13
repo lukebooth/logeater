@@ -1,6 +1,8 @@
 require "logeater/parser"
 require "logeater/reader"
+require "logeater/writer"
 require "logeater/request"
+require "logeater/event"
 require "logeater/version"
 require "yaml"
 require "erb"

@@ -89,5 +89,14 @@ module Logeater
       $stderr.puts "Total time %d minutes, %.2f seconds" % [minutes, seconds]
     end
 
+    desc "import_since APP TIMESTAMP", "imports log events since timestamp"
+    def import_since(app, timestamp)
+      events_table = Logeater::Event.arel_table
+      events = Logeater::Event.where(app: app).where(events_table[:received_at].gteq(timestamp))
+      path = "./db_logs/#{app}"
+      Logeater::Writer.new(app, events, path).write!
+      import(app, path)
+    end
+
   end
 end
